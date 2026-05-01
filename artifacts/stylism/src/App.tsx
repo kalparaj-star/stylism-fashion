@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Menu, X, MapPin, Phone, Instagram } from "lucide-react";
+import { Menu, X, MapPin, Phone, Instagram, ShieldCheck } from "lucide-react";
+
+interface GuideItem {
+  title: string;
+  category: string;
+  image?: string;
+  fabric: string;
+  sizes: { label: string; measurement: string }[];
+  sizeLabel: string;
+  care: string[];
+  note?: string;
+  whatsappText: string;
+}
 
 // Import images
 import heroBg from "@assets/GIFT3f8WUAA5yd8_1777654380164.jpg";
@@ -13,6 +25,99 @@ import wranglerJeans from "@assets/Wrangler_FW20_TEXAS_campaign-contentpage_CAMP
 import ariatDenim from "@assets/eeefac5004f774496434593bdb8e28d6_1777654380224.jpg";
 import clothingRack from "@assets/pexels-fotios-photos-37002320_1777654380193.jpg";
 import beachPicnic from "@assets/pexels-leeloothefirst-8908603_1777654380209.jpg";
+
+const GUIDE_DATA: Record<string, GuideItem> = {
+  "crimson-anarkali": {
+    title: "Crimson Anarkali", category: "Women's Ethnic",
+    fabric: "Pure Georgette with Zari Embroidery",
+    sizeLabel: "Bust Measurement",
+    sizes: [{ label: "XS", measurement: "32\"" }, { label: "S", measurement: "34\"" }, { label: "M", measurement: "36\"" }, { label: "L", measurement: "38\"" }, { label: "XL", measurement: "40\"" }, { label: "XXL", measurement: "42\"" }],
+    care: ["Dry clean recommended", "Hand wash cold with mild detergent", "Do not wring or tumble dry", "Lay flat to dry in shade", "Iron reverse side at medium heat"],
+    note: "Custom sizing & stitching available in-store.",
+    whatsappText: "Hello Stylism! I am interested in the Crimson Anarkali from your Women's Ethnic Collection.",
+  },
+  "indigo-sambalpuri": {
+    title: "Indigo Sambalpuri Ikat", category: "Women's Ethnic",
+    fabric: "Handloom Cotton Ikat — Hand-woven in Odisha",
+    sizeLabel: "Bust Measurement",
+    sizes: [{ label: "S", measurement: "34\"" }, { label: "M", measurement: "36\"" }, { label: "L", measurement: "38\"" }, { label: "XL", measurement: "40\"" }, { label: "Custom", measurement: "On Request" }],
+    care: ["Hand wash separately in cold water", "Colours may bleed on first wash — wash alone", "Use mild detergent, no bleach", "Air dry in shade", "Iron reverse at low heat"],
+    note: "Each piece is hand-woven — slight variations are a mark of authenticity.",
+    whatsappText: "Hello Stylism! I am interested in the Indigo Sambalpuri Ikat set.",
+  },
+  "golden-tissue": {
+    title: "Golden Tissue Saree", category: "Women's Ethnic",
+    fabric: "Pure Tissue Silk with Zari Border",
+    sizeLabel: "Standard",
+    sizes: [{ label: "Saree Length", measurement: "5.5 metres" }, { label: "Blouse Piece", measurement: "0.8 metres" }],
+    care: ["Dry clean only", "Store in muslin cloth, not plastic", "Avoid direct sunlight and moisture", "Do not iron directly — use a cloth barrier", "Re-fold every 3 months to prevent crease lines"],
+    note: "Blouse stitching available at the store on request.",
+    whatsappText: "Hello Stylism! I am interested in the Golden Tissue Saree.",
+  },
+  "resort-collection": {
+    title: "Resort Collection", category: "Women's Ethnic",
+    fabric: "Lightweight Linen-Cotton Blend",
+    sizeLabel: "Bust Measurement",
+    sizes: [{ label: "S", measurement: "34\"" }, { label: "M", measurement: "36\"" }, { label: "L", measurement: "38\"" }, { label: "XL", measurement: "40\"" }, { label: "XXL", measurement: "42\"" }],
+    care: ["Machine wash cold — gentle cycle", "Tumble dry low or air dry", "Iron on medium heat", "Do not bleach"],
+    note: "Available in multiple colourways. Ask in-store.",
+    whatsappText: "Hello Stylism! I am interested in pieces from the Resort Collection.",
+  },
+  "linen-architecture": {
+    title: "Linen Architecture", category: "Men's Clothing",
+    fabric: "100% European Linen — Breathable & Structured",
+    sizeLabel: "Chest Measurement",
+    sizes: [{ label: "S", measurement: "36–38\"" }, { label: "M", measurement: "38–40\"" }, { label: "L", measurement: "40–42\"" }, { label: "XL", measurement: "42–44\"" }, { label: "XXL", measurement: "44–46\"" }],
+    care: ["Hand wash or machine wash cold — gentle cycle", "Air dry — do not tumble dry", "Iron while slightly damp for crisp finish", "Natural linen creasing is part of the character"],
+    note: "Tailoring and alterations available in-store.",
+    whatsappText: "Hello Stylism! I am interested in the Linen Architecture suit from Men's Clothing.",
+  },
+  "wrangler-desert": {
+    title: "Wrangler Desert", category: "Men's Clothing",
+    fabric: "Premium Heavyweight Denim — 100% Cotton",
+    sizeLabel: "Waist Measurement",
+    sizes: [{ label: "28", measurement: "Waist 28\"" }, { label: "30", measurement: "Waist 30\"" }, { label: "32", measurement: "Waist 32\"" }, { label: "34", measurement: "Waist 34\"" }, { label: "36", measurement: "Waist 36\"" }, { label: "38", measurement: "Waist 38\"" }],
+    care: ["Machine wash cold inside out", "Tumble dry low to preserve shape", "Iron inside out to avoid fading", "Less frequent washing extends colour life"],
+    note: "Available in regular and slim fits. Try in-store.",
+    whatsappText: "Hello Stylism! I am interested in the Wrangler Desert jeans.",
+  },
+  "ariat-denim": {
+    title: "Ariat Denim", category: "Men's Clothing",
+    fabric: "Premium Stretch Denim — Cotton-Elastane Blend",
+    sizeLabel: "Waist Measurement",
+    sizes: [{ label: "28", measurement: "Waist 28\"" }, { label: "30", measurement: "Waist 30\"" }, { label: "32", measurement: "Waist 32\"" }, { label: "34", measurement: "Waist 34\"" }, { label: "36", measurement: "Waist 36\"" }, { label: "38", measurement: "Waist 38\"" }, { label: "40", measurement: "Waist 40\"" }],
+    care: ["Machine wash cold inside out", "Tumble dry low", "Do not bleach", "Stretch denim retains shape with proper care"],
+    note: "Fits true to size with comfortable movement.",
+    whatsappText: "Hello Stylism! I am interested in the Ariat Denim from Men's Clothing.",
+  },
+  "coastal-linens": {
+    title: "Coastal Linens", category: "Men's Clothing",
+    fabric: "Cotton-Linen Blend — Lightweight & Breathable",
+    sizeLabel: "Chest Measurement",
+    sizes: [{ label: "S", measurement: "36–38\"" }, { label: "M", measurement: "38–40\"" }, { label: "L", measurement: "40–42\"" }, { label: "XL", measurement: "42–44\"" }],
+    care: ["Machine wash cold — gentle cycle", "Air dry or tumble dry low", "Light iron on medium heat", "Do not bleach"],
+    note: "Perfect for Bhubaneswar's climate. Ask about colour options.",
+    whatsappText: "Hello Stylism! I am interested in the Coastal Linens collection.",
+  },
+  "stylism-signature": {
+    title: "STYLISM Signature", category: "Men's Accessories",
+    fabric: "Eau de Parfum — 100ml",
+    sizeLabel: "Fragrance Profile",
+    sizes: [{ label: "Top Notes", measurement: "Bergamot & Sea Salt" }, { label: "Heart Notes", measurement: "Amber & Sandalwood" }, { label: "Base Notes", measurement: "Musk & Cedarwood" }],
+    care: ["Store away from direct sunlight and heat", "Keep cap on when not in use", "Spray on pulse points — wrists, neck, chest", "Do not rub wrists together after applying", "Shelf life: 3 years from manufacture date"],
+    note: "Available exclusively at Stylism, Khandagiri. Limited stock.",
+    whatsappText: "Hello Stylism! I am interested in the STYLISM Signature Perfume.",
+  },
+  "atelier-collection": {
+    title: "The Atelier Collection", category: "Men's Accessories",
+    fabric: "Curated Multi-Fabric Wardrobe Essentials",
+    sizeLabel: "Size",
+    sizes: [{ label: "S / M", measurement: "Adjustable" }, { label: "L / XL", measurement: "Adjustable" }, { label: "One Size", measurement: "Fits Most" }],
+    care: ["Care varies by individual item", "Check garment label before washing", "Store in a cool, dry place", "Use padded hangers for structured pieces"],
+    note: "Visit the atelier for a full browse of our curated accessories.",
+    whatsappText: "Hello Stylism! I am interested in the Atelier Collection accessories.",
+  },
+};
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -35,6 +140,15 @@ export default function App() {
     setAppointmentOpen(false);
     setTimeout(() => { setSubmitted(false); setForm({ name: "", phone: "", date: "", note: "" }); }, 500);
   };
+
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [activeGuide, setActiveGuide] = useState<GuideItem | null>(null);
+
+  const openGuide = (id: string) => {
+    const guide = GUIDE_DATA[id];
+    if (guide) { setActiveGuide(guide); setGuideOpen(true); }
+  };
+  const closeGuide = () => { setGuideOpen(false); setTimeout(() => setActiveGuide(null), 400); };
 
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 1000], [0, 300]);
@@ -249,10 +363,10 @@ export default function App() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {[
-            { img: anarkali, title: "Crimson Anarkali" },
-            { img: sambalpuri, title: "Indigo Sambalpuri Ikat" },
-            { img: goldTissue, title: "Golden Tissue Saree" },
-            { img: heroBg, title: "Resort Collection" } // Reused as requested
+            { img: anarkali, title: "Crimson Anarkali", id: "crimson-anarkali" },
+            { img: sambalpuri, title: "Indigo Sambalpuri Ikat", id: "indigo-sambalpuri" },
+            { img: goldTissue, title: "Golden Tissue Saree", id: "golden-tissue" },
+            { img: heroBg, title: "Resort Collection", id: "resort-collection" },
           ].map((item, i) => (
             <motion.div 
               key={i}
@@ -261,6 +375,8 @@ export default function App() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="group relative overflow-hidden aspect-[3/4] cursor-pointer"
+              onClick={() => openGuide(item.id)}
+              data-testid={`card-product-${item.id}`}
             >
               <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
@@ -289,10 +405,10 @@ export default function App() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-24">
           {[
-            { img: linenSuit, title: "Linen Architecture" },
-            { img: wranglerJeans, title: "Wrangler Desert" },
-            { img: ariatDenim, title: "Ariat Denim" },
-            { img: heroBg, title: "Coastal Linens" } 
+            { img: linenSuit, title: "Linen Architecture", id: "linen-architecture" },
+            { img: wranglerJeans, title: "Wrangler Desert", id: "wrangler-desert" },
+            { img: ariatDenim, title: "Ariat Denim", id: "ariat-denim" },
+            { img: heroBg, title: "Coastal Linens", id: "coastal-linens" },
           ].map((item, i) => (
             <motion.div 
               key={i}
@@ -301,6 +417,8 @@ export default function App() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="group relative overflow-hidden aspect-[3/4] cursor-pointer"
+              onClick={() => openGuide(item.id)}
+              data-testid={`card-product-${item.id}`}
             >
               <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
@@ -350,6 +468,8 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative h-[70vh] bg-[#1a1a1a] flex items-center justify-center overflow-hidden group cursor-pointer"
+            onClick={() => openGuide("stylism-signature")}
+            data-testid="card-product-stylism-signature"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-black/80 to-transparent z-10 pointer-events-none" />
             <img src={perfume} alt="Stylism Signature Perfume" className="w-3/4 h-3/4 object-contain z-0 transition-transform duration-1000 group-hover:scale-105" />
@@ -366,6 +486,8 @@ export default function App() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative overflow-hidden group cursor-pointer"
+              onClick={() => openGuide("atelier-collection")}
+              data-testid="card-product-atelier-collection"
             >
               <img src={clothingRack} alt="Curated Pieces" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-500" />
@@ -759,6 +881,178 @@ export default function App() {
                   </button>
                 </motion.div>
               )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Size & Care Guide Drawer */}
+      <AnimatePresence>
+        {guideOpen && activeGuide && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-stretch justify-end"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={closeGuide}
+            />
+
+            {/* Panel */}
+            <motion.div
+              className="relative z-10 w-full max-w-md bg-[#0f0f0f] h-full overflow-y-auto flex flex-col shadow-2xl"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 220 }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="relative flex items-center justify-between px-8 pt-8 pb-6 border-b border-white/10">
+                <div>
+                  <span
+                    className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase mb-1 block"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    {activeGuide.category}
+                  </span>
+                  <h2
+                    className="text-white font-serif text-xl leading-snug"
+                  >
+                    {activeGuide.title}
+                  </h2>
+                </div>
+                <button
+                  onClick={closeGuide}
+                  className="w-9 h-9 border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 transition-colors duration-200"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+
+              {/* Fabric */}
+              <div className="px-8 pt-7 pb-5 border-b border-white/10">
+                <p
+                  className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase mb-2"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  Fabric & Material
+                </p>
+                <p
+                  className="text-white/80 text-sm leading-relaxed"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  {activeGuide.fabric}
+                </p>
+              </div>
+
+              {/* Size / Profile Guide */}
+              <div className="px-8 pt-7 pb-5 border-b border-white/10">
+                <p
+                  className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase mb-4"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  {activeGuide.sizeLabel}
+                </p>
+                <div className="rounded overflow-hidden border border-white/10">
+                  {activeGuide.sizes.map((row, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center justify-between px-4 py-3 ${i % 2 === 0 ? "bg-white/5" : "bg-transparent"}`}
+                    >
+                      <span
+                        className="text-[#C9A84C] text-xs font-semibold tracking-wider uppercase"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      >
+                        {row.label}
+                      </span>
+                      <span
+                        className="text-white/70 text-xs"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      >
+                        {row.measurement}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p
+                  className="text-white/30 text-[10px] mt-3 italic"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  Sizes may vary slightly. Try in-store for the perfect fit.
+                </p>
+              </div>
+
+              {/* Care Instructions */}
+              <div className="px-8 pt-7 pb-5 border-b border-white/10">
+                <p
+                  className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase mb-4"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  Care Instructions
+                </p>
+                <ul className="space-y-3">
+                  {activeGuide.care.map((c, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-white/70 text-xs leading-relaxed"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      <div className="w-[1px] h-3 bg-[#C9A84C]/60 mt-[3px] shrink-0" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Note */}
+              {activeGuide.note && (
+                <div className="px-8 pt-6 pb-5">
+                  <div className="flex items-start gap-3">
+                    <ShieldCheck size={14} className="text-[#C9A84C] mt-[2px] shrink-0" />
+                    <p
+                      className="text-white/50 text-xs italic leading-relaxed"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {activeGuide.note}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* CTA */}
+              <div className="mt-auto px-8 py-8 border-t border-white/10">
+                <p
+                  className="text-white/30 text-[10px] tracking-wider uppercase mb-4 text-center"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  Interested in this piece?
+                </p>
+                <a
+                  href={`https://wa.me/918260732455?text=${encodeURIComponent(activeGuide.whatsappText)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-3 w-full bg-[#C9A84C] text-black text-[10px] tracking-[0.25em] uppercase py-4 hover:bg-[#b8973f] transition-colors duration-300 font-semibold"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current shrink-0">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.531 5.842L.057 23.944l6.265-1.642A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.597-.497-5.103-1.364l-.366-.214-3.719.974.994-3.621-.232-.375A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                  </svg>
+                  Contact on WhatsApp
+                </a>
+                <button
+                  onClick={() => { closeGuide(); setAppointmentOpen(true); }}
+                  className="w-full mt-3 border border-[#C9A84C]/40 text-[#C9A84C] text-[10px] tracking-[0.2em] uppercase py-3 hover:bg-[#C9A84C]/10 transition-colors duration-300"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
+                >
+                  Book a Styling Appointment
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
