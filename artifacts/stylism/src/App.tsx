@@ -18,6 +18,23 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [appointmentOpen, setAppointmentOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "", date: "", note: "" });
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAppointmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const closeAppointment = () => {
+    setAppointmentOpen(false);
+    setTimeout(() => { setSubmitted(false); setForm({ name: "", phone: "", date: "", note: "" }); }, 500);
+  };
 
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 1000], [0, 300]);
@@ -110,11 +127,22 @@ export default function App() {
             STYLISM
           </div>
           
-          <div className="hidden md:flex space-x-8 text-sm tracking-widest uppercase text-white/90">
+          <div className="hidden md:flex items-center space-x-8 text-sm tracking-widest uppercase text-white/90">
             <button onClick={() => scrollTo('collections')} className="hover:text-[#C9A84C] transition-colors">Collections</button>
             <button onClick={() => scrollTo('mens')} className="hover:text-[#C9A84C] transition-colors">Men's Clothing</button>
             <button onClick={() => scrollTo('accessories')} className="hover:text-[#C9A84C] transition-colors">Accessories</button>
             <button onClick={() => scrollTo('contact')} className="hover:text-[#C9A84C] transition-colors">Contact</button>
+          </div>
+
+          <div className="hidden md:flex items-center">
+            <button
+              data-testid="button-book-appointment"
+              onClick={() => setAppointmentOpen(true)}
+              className="border border-[#C9A84C] text-[#C9A84C] text-[10px] tracking-[0.2em] uppercase px-5 py-2 hover:bg-[#C9A84C] hover:text-black transition-all duration-300"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              Book Appointment
+            </button>
           </div>
           
           <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -135,6 +163,13 @@ export default function App() {
               <button onClick={() => scrollTo('mens')} className="text-left text-white uppercase tracking-widest text-sm py-2">Men's Clothing</button>
               <button onClick={() => scrollTo('accessories')} className="text-left text-white uppercase tracking-widest text-sm py-2">Accessories</button>
               <button onClick={() => scrollTo('contact')} className="text-left text-white uppercase tracking-widest text-sm py-2">Contact</button>
+              <button
+                data-testid="button-book-appointment-mobile"
+                onClick={() => { setMobileMenuOpen(false); setAppointmentOpen(true); }}
+                className="text-left text-[#C9A84C] uppercase tracking-widest text-sm py-2 border-t border-white/10 pt-4"
+              >
+                Book Appointment
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -468,6 +503,160 @@ export default function App() {
           <p className="text-white/40 text-sm tracking-widest">&copy; 2025 STYLISM. ALL RIGHTS RESERVED.</p>
         </div>
       </section>
+
+      {/* Book an Appointment Modal */}
+      <AnimatePresence>
+        {appointmentOpen && (
+          <motion.div
+            className="fixed inset-0 z-[60] flex items-center justify-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            data-testid="modal-appointment"
+          >
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={closeAppointment}
+            />
+
+            {/* Panel */}
+            <motion.div
+              className="relative z-10 w-full max-w-lg bg-[#0a0a0a] border border-[#C9A84C]/30 p-10"
+              initial={{ opacity: 0, y: 40, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              {/* Close */}
+              <button
+                data-testid="button-close-modal"
+                onClick={closeAppointment}
+                className="absolute top-5 right-5 text-white/40 hover:text-[#C9A84C] transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              {!submitted ? (
+                <>
+                  {/* Header */}
+                  <div className="mb-8">
+                    <p className="text-[#C9A84C] text-[10px] tracking-[0.25em] uppercase mb-3" style={{ fontFamily: "Montserrat, sans-serif" }}>Personal Styling</p>
+                    <h2 className="text-3xl font-serif text-white tracking-wide">Book an Appointment</h2>
+                    <p className="text-white/40 text-xs mt-3 leading-relaxed tracking-wide" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                      Reserve a private styling session at our Khandagiri store. We will confirm via WhatsApp.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleAppointmentSubmit} className="space-y-5" data-testid="form-appointment">
+                    {/* Name */}
+                    <div>
+                      <label className="block text-[10px] text-white/50 tracking-[0.2em] uppercase mb-2" style={{ fontFamily: "Montserrat, sans-serif" }}>Full Name</label>
+                      <input
+                        data-testid="input-name"
+                        name="name"
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={handleFormChange}
+                        placeholder="Your name"
+                        className="w-full bg-transparent border border-white/20 focus:border-[#C9A84C] text-white text-sm px-4 py-3 outline-none transition-colors placeholder:text-white/20"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label className="block text-[10px] text-white/50 tracking-[0.2em] uppercase mb-2" style={{ fontFamily: "Montserrat, sans-serif" }}>WhatsApp Number</label>
+                      <input
+                        data-testid="input-phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        value={form.phone}
+                        onChange={handleFormChange}
+                        placeholder="+91 XXXXX XXXXX"
+                        className="w-full bg-transparent border border-white/20 focus:border-[#C9A84C] text-white text-sm px-4 py-3 outline-none transition-colors placeholder:text-white/20"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      />
+                    </div>
+
+                    {/* Date */}
+                    <div>
+                      <label className="block text-[10px] text-white/50 tracking-[0.2em] uppercase mb-2" style={{ fontFamily: "Montserrat, sans-serif" }}>Preferred Visit Date</label>
+                      <input
+                        data-testid="input-date"
+                        name="date"
+                        type="date"
+                        required
+                        value={form.date}
+                        onChange={handleFormChange}
+                        min={new Date().toISOString().split("T")[0]}
+                        className="w-full bg-transparent border border-white/20 focus:border-[#C9A84C] text-white text-sm px-4 py-3 outline-none transition-colors [color-scheme:dark]"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      />
+                    </div>
+
+                    {/* Note */}
+                    <div>
+                      <label className="block text-[10px] text-white/50 tracking-[0.2em] uppercase mb-2" style={{ fontFamily: "Montserrat, sans-serif" }}>Note (Optional)</label>
+                      <textarea
+                        data-testid="input-note"
+                        name="note"
+                        rows={3}
+                        value={form.note}
+                        onChange={handleFormChange}
+                        placeholder="What are you looking for? Ethnic wear, menswear, accessories..."
+                        className="w-full bg-transparent border border-white/20 focus:border-[#C9A84C] text-white text-sm px-4 py-3 outline-none transition-colors resize-none placeholder:text-white/20"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      />
+                    </div>
+
+                    <button
+                      data-testid="button-submit-appointment"
+                      type="submit"
+                      className="w-full bg-[#C9A84C] text-black text-[10px] tracking-[0.25em] uppercase py-4 hover:bg-[#b8973f] transition-colors duration-300 font-semibold mt-2"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      Request Appointment
+                    </button>
+                  </form>
+                </>
+              ) : (
+                /* Success State */
+                <motion.div
+                  className="text-center py-8"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                  data-testid="appointment-success"
+                >
+                  <div className="w-14 h-14 border border-[#C9A84C] flex items-center justify-center mx-auto mb-6">
+                    <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[#C9A84C] fill-none" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-serif text-white mb-3">Appointment Requested</h2>
+                  <p className="text-white/40 text-xs leading-relaxed tracking-wide mb-2" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                    Thank you, <span className="text-[#C9A84C]">{form.name}</span>.
+                  </p>
+                  <p className="text-white/40 text-xs leading-relaxed tracking-wide mb-8" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                    Our team will confirm your appointment on <span className="text-white/70">{form.phone}</span> via WhatsApp within 24 hours.
+                  </p>
+                  <button
+                    data-testid="button-close-success"
+                    onClick={closeAppointment}
+                    className="border border-[#C9A84C]/50 text-[#C9A84C] text-[10px] tracking-[0.2em] uppercase px-8 py-3 hover:bg-[#C9A84C] hover:text-black transition-all duration-300"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    Close
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Floating WhatsApp Button */}
       <motion.a
