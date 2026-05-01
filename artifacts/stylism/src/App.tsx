@@ -435,6 +435,112 @@ export default function App() {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="py-24 bg-[#0d0d0d] overflow-hidden">
+        <div className="container mx-auto px-6 md:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <p className="text-[#C9A84C] text-[10px] tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "Montserrat, sans-serif" }}>What Our Clients Say</p>
+            <h2 className="text-4xl md:text-5xl font-serif text-white">Voices of Stylism</h2>
+            <div className="w-12 h-[1px] bg-[#C9A84C] mx-auto mt-6" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                quote: "I walked in looking for a saree for my daughter's wedding and left with the most exquisite Sambalpuri silk I have ever seen. The attention to every detail is unmatched.",
+                name: "Priya Mohanty",
+                location: "Bhubaneswar",
+                item: "Women's Ethnic Collection",
+              },
+              {
+                quote: "The linen suit I picked up here got me more compliments at my cousin's reception than anything I have ever worn. The quality speaks for itself the moment you touch the fabric.",
+                name: "Arjun Pattnaik",
+                location: "Cuttack",
+                item: "Men's Clothing",
+              },
+              {
+                quote: "Stylism Signature perfume is now my signature. Picked it up on a whim and I have never received so many questions about what I am wearing. Absolutely distinctive.",
+                name: "Kavya Nanda",
+                location: "Bhubaneswar",
+                item: "Men's Accessories",
+              },
+              {
+                quote: "The ikat kurta set I bought for Puja is still the piece I reach for every festive occasion. It feels like wearing Odisha's heritage — but elevated for modern life.",
+                name: "Smita Das",
+                location: "Khordha",
+                item: "Women's Ethnic Collection",
+              },
+              {
+                quote: "I booked an appointment and the personal styling session was incredible. They understood exactly what I needed without me having to explain myself twice. Rare these days.",
+                name: "Rahul Sahoo",
+                location: "Bhubaneswar",
+                item: "Personal Styling",
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                data-testid={`card-testimonial-${i}`}
+                className={`border border-white/10 p-8 flex flex-col justify-between hover:border-[#C9A84C]/40 transition-colors duration-500 group ${i === 4 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              >
+                {/* Stars */}
+                <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, s) => (
+                    <svg key={s} viewBox="0 0 16 16" className="w-3 h-3 fill-[#C9A84C]">
+                      <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.751.751 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p
+                  className="text-white/60 text-sm leading-relaxed italic flex-1 group-hover:text-white/80 transition-colors duration-500"
+                  style={{ fontFamily: "Playfair Display, Georgia, serif" }}
+                >
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+
+                {/* Divider */}
+                <div className="w-8 h-[1px] bg-[#C9A84C]/40 my-6 group-hover:bg-[#C9A84C] transition-colors duration-500" />
+
+                {/* Author */}
+                <div>
+                  <p className="text-white text-sm font-semibold tracking-wide" style={{ fontFamily: "Montserrat, sans-serif" }}>{t.name}</p>
+                  <p className="text-white/30 text-[10px] tracking-[0.15em] uppercase mt-1" style={{ fontFamily: "Montserrat, sans-serif" }}>{t.location} &nbsp;·&nbsp; {t.item}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center mt-16"
+          >
+            <button
+              data-testid="button-book-appointment-testimonials"
+              onClick={() => setAppointmentOpen(true)}
+              className="border border-[#C9A84C]/50 text-[#C9A84C] text-[10px] tracking-[0.25em] uppercase px-10 py-4 hover:bg-[#C9A84C] hover:text-black transition-all duration-300"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              Begin Your Own Stylism Story
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Contact & Footer */}
       <section className="bg-[#111111] text-white pt-24" id="contact">
         <div className="container mx-auto px-6 md:px-12 mb-24">
