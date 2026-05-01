@@ -77,8 +77,34 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* New Arrivals Marquee Ticker */}
+      <div className="fixed top-0 left-0 w-full z-50 h-8 bg-[#C9A84C] overflow-hidden flex items-center" data-testid="banner-marquee">
+        <div className="animate-marquee">
+          {[...Array(2)].map((_, i) => (
+            <span key={i} className="flex items-center">
+              {[
+                "NEW ARRIVALS: Sambalpuri Handloom Collection",
+                "Stylism Signature Perfume — Now Available",
+                "Premium Menswear: Denims, Shirts & Jackets",
+                "Women's Ethnic — Ikat Sarees & Kurta Sets",
+                "Visit Us: Khandagiri Bari, Bhubaneswar",
+                "No Online Delivery — Contact for Personalized Shopping",
+                "Follow Us on Instagram: @.stylism.",
+              ].map((item, j) => (
+                <span key={j} className="flex items-center">
+                  <span className="text-black text-[10px] tracking-[0.2em] uppercase font-semibold whitespace-nowrap px-6" style={{ fontFamily: "Montserrat, sans-serif" }}>
+                    {item}
+                  </span>
+                  <span className="text-black/50 text-xs select-none">&#9670;</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Navigation */}
-      <nav className={`fixed w-full z-40 transition-all duration-500 ${scrolled ? 'bg-black/95 py-4 shadow-lg backdrop-blur-sm' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed w-full z-40 top-8 transition-all duration-500 ${scrolled ? 'bg-black/95 py-4 shadow-lg backdrop-blur-sm' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
           <div className="text-2xl font-serif text-[#C9A84C] tracking-widest cursor-pointer" onClick={() => window.scrollTo(0,0)}>
             STYLISM

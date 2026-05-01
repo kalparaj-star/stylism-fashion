@@ -138,6 +138,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Marquee infinite scroll animation */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* Hide scrollbar for immersive experience */
 ::-webkit-scrollbar {
   width: 6px;
