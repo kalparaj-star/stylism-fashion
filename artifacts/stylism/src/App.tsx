@@ -442,6 +442,42 @@ export default function App() {
           <p className="text-white/40 text-sm tracking-widest">&copy; 2025 STYLISM. ALL RIGHTS RESERVED.</p>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/918260732455?text=Hello%20Stylism%2C%20I%20am%20interested%20in%20your%20collection!"
+        target="_blank"
+        rel="noreferrer"
+        data-testid="button-whatsapp-chat"
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 group"
+        initial={{ opacity: 0, scale: 0, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 3.2, duration: 0.5, type: "spring", stiffness: 200 }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {/* Tooltip label */}
+        <motion.span
+          className="bg-black/90 text-white text-xs tracking-widest uppercase px-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap border border-[#C9A84C]/40"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          Chat on WhatsApp
+        </motion.span>
+
+        {/* Pulsing ring */}
+        <span className="relative flex h-16 w-16 items-center justify-center">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-20" />
+          <span className="relative flex h-16 w-16 rounded-full bg-[#25D366] items-center justify-center shadow-2xl shadow-[#25D366]/40">
+            <svg
+              viewBox="0 0 32 32"
+              className="h-8 w-8 fill-white"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.75.72 5.43 2.09 7.8L.5 31.5l7.88-2.06A15.43 15.43 0 0016 31.5C24.56 31.5 31.5 24.56 31.5 16S24.56.5 16 .5zm0 28.2a13.6 13.6 0 01-6.93-1.9l-.5-.3-5.17 1.36 1.38-5.04-.33-.52A13.6 13.6 0 1116 28.7zm7.47-10.18c-.41-.2-2.43-1.2-2.81-1.34-.38-.14-.65-.2-.92.21-.27.41-1.05 1.34-1.29 1.61-.24.27-.47.3-.88.1a11.16 11.16 0 01-3.29-2.03 12.32 12.32 0 01-2.28-2.83c-.24-.41 0-.63.18-.84.17-.18.38-.47.57-.71.19-.24.25-.41.38-.68.13-.27.06-.51-.03-.71-.1-.2-.92-2.22-1.26-3.04-.33-.8-.67-.69-.92-.7h-.79c-.27 0-.71.1-1.08.51-.37.41-1.42 1.39-1.42 3.39s1.45 3.93 1.65 4.2c.2.27 2.86 4.37 6.93 6.12.97.42 1.72.67 2.31.86.97.31 1.85.27 2.55.16.78-.12 2.43-.99 2.77-1.95.34-.96.34-1.78.24-1.95-.1-.17-.37-.27-.78-.47z" />
+            </svg>
+          </span>
+        </span>
+      </motion.a>
     </div>
   );
 }
